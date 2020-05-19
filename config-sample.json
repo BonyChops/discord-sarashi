@@ -1,0 +1,13 @@
+{
+    "discord": {
+        "mail": "***",
+        "password": "***",
+        "accessToken": "***"
+    },
+    "twitter": {
+        "consumerKey": "***",
+        "consumerSecret": "***",
+        "accessToken": "***",
+        "accessTokenSecret": "***"
+    }
+}
