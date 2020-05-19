@@ -6,6 +6,16 @@ const accessTokens = JSON.parse(fs.readFileSync(__dirname+"/config.json", "utf-8
 const accessTokenDiscord = accessTokens.discord.accessToken;
 const puppeteer = require('puppeteer');
 const Twitter = require('twitter');
+let OSData = null;
+let RaspberryPi = false;
+try{ OSData = fs.readFileSync("/etc/os-release", "utf-8")}catch(error){ console.log("Failed to load OS Data.")};
+if(OSData !== null){
+    if(OSData.split("\n").filter(q => q.search(/ID\s*=\s*raspbian/) !== -1).length > 0){
+        console.log("Boot in Raspberry Pi mode!");
+        RaspberryPi = true;
+    }
+}
+console.log("Loading...");
 const twClient = new Twitter({
     consumer_key: accessTokens.twitter.consumerKey,
     consumer_secret: accessTokens.twitter.consumerSecret,
@@ -56,8 +66,16 @@ const formatDate = (date, format) =>  {
   };
 
 const captureScreen = async(msg, twStatus = "") =>{
-    console.log("Logging in...")
-    const browser = await puppeteer.launch();
+    console.log("Logging in...");
+    let browser;
+    if(!RaspberryPi){
+        browser = await puppeteer.launch();
+    }else{
+        browser = await puppeteer.launch({
+            headless: true,
+            executablePath: '/usr/bin/chromium-browser'
+        });
+    }
     const page = await browser.newPage();
     const mouse = page.mouse;
     const width = 1600;
