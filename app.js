@@ -121,6 +121,7 @@ const captureScreen = async(msg, twStatus = "") =>{
         await browser.close();
     }catch(error){
         msg.reply("無理でした");
+        return;
     }
 
     // Load your image
